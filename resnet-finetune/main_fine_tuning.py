@@ -245,6 +245,9 @@ def exp_lr_scheduler(optimizer, epoch, init_lr=BASE_LR, lr_decay_epoch=EPOCH_DEC
 # Set the number of classes in the config file by setting the right value for NUM_CLASSES.
 
 model_ft = models.resnet18(pretrained=True)
+
+model_ft.save_state_dict('../model/classification/pretrained_model.pt')
+
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, NUM_CLASSES)
 
@@ -264,4 +267,4 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                        num_epochs=100)
 
 # Save model
-model_ft.save_state_dict('fine_tuned_best_model.pt')
+model_ft.save_state_dict('../trained_model/classification/fine_tuned_best_model.pt')
