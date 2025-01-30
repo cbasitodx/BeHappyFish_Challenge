@@ -133,7 +133,7 @@ dset_classes = dsets['train'].classes
 # 1) NEVER overwrite a pytorch variable, as all previous history will be lost and autograd won't work.
 # 2) Variables can only undergo operations that are differentiable.
 
-def train_model(model, criterion, optimizer, lr_scheduler, num_epochs=100):
+def train_model(model, criterion, optimizer, lr_scheduler, num_epochs=10):
     since = time.time()
 
     best_model = model
@@ -263,7 +263,7 @@ optimizer_ft = optim.RMSprop(model_ft.parameters(), lr=0.0001)
 
 # Run the functions and save the best model in the function model_ft.
 model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=100)
+                       num_epochs=10)
 
 # Save model
 torch.save(model_ft.state_dict(), '../trained_model/classification/fine_tuned_best_model.pt')
