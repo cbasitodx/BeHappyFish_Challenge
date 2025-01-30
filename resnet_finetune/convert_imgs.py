@@ -4,7 +4,6 @@ import re
 
 # Paths
 YOLO_IMAGES_PATH = "images"  # Folder containing YOLO dataset images
-YOLO_LABELS_PATH = "images"  # YOLO dataset labels are inside 'images/{split}/labels'
 EYE_IMGS_PATH = "eye_imgs"  # Folder with healthy/sick classification
 NEW_DATASET_PATH = "dataset"
 
@@ -18,12 +17,14 @@ CATEGORY_MAP = {
     "EyeIssue": "sick"
 }
 
+
 def get_base_name(yolo_filename):
     """Extracts the base name from a YOLO filename to match 'eye_imgs' format."""
     match = re.match(r"(ZHAW[-_]Biocam_\d+_\d+)_jpg\.rf\..+\.jpg", yolo_filename)
     if match:
         return match.group(1).replace("-", " ") + ".jpg"  # Convert dashes to spaces
     return None
+
 
 def get_category(yolo_filename):
     """Determines if an image is 'healthy' or 'sick' based on 'eye_imgs' filenames."""
@@ -33,6 +34,7 @@ def get_category(yolo_filename):
             if os.path.exists(os.path.join(EYE_IMGS_PATH, category, base_name)):
                 return label
     return None  # Ignore images not found in 'eye_imgs'
+
 
 def process_split(split):
     """Processes train or valid split, extracting only 'Eye' and classifying."""
@@ -83,6 +85,7 @@ def process_split(split):
                     new_image_name = f"{os.path.splitext(image_file)[0]}_eye_{i}.jpg"
                     new_image_path = os.path.join(new_folder, new_image_name)
                     cv2.imwrite(new_image_path, eye_crop)
+
 
 # Process train and valid splits
 for split in ["train", "valid"]:
