@@ -246,7 +246,7 @@ def exp_lr_scheduler(optimizer, epoch, init_lr=BASE_LR, lr_decay_epoch=EPOCH_DEC
 
 model_ft = models.resnet18(pretrained=True)
 
-model_ft._save_to_state_dict('../model/classification/pretrained_model.pt')
+torch.save(model_ft.state_dict(), '../model/classification/pretrained_model.pt')
 
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, NUM_CLASSES)
@@ -266,4 +266,4 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                        num_epochs=100)
 
 # Save model
-model_ft._save_to_state_dict('../trained_model/classification/fine_tuned_best_model.pt')
+torch.save(model_ft.state_dict(), '../trained_model/classification/fine_tuned_best_model.pt')
