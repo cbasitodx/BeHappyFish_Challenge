@@ -61,7 +61,7 @@ data_transforms = {
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
-    'val': transforms.Compose([
+    'valid': transforms.Compose([
         transforms.Resize(224),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
@@ -72,15 +72,15 @@ data_transforms = {
 
 
 # Enter the absolute path of the dataset folder below. Keep in mind that this code expects data to be in same format as Imagenet. I encourage you to
-# use your own dataset. In that case you need to organize your data such that your dataset folder has EXACTLY two folders. Name these 'train' and 'val'
-# Yes, this is case sensitive. The 'train' folder contains training set and 'val' fodler contains validation set on which accuracy is measured. 
+# use your own dataset. In that case you need to organize your data such that your dataset folder has EXACTLY two folders. Name these 'train' and 'valid'
+# Yes, this is case sensitive. The 'train' folder contains training set and 'valid' fodler contains validation set on which accuracy is measured. 
 
-# The structure within 'train' and 'val' folders will be the same. They both contain one folder per class. All the images of that class are inside the 
+# The structure within 'train' and 'valid' folders will be the same. They both contain one folder per class. All the images of that class are inside the 
 # folder named by class name.
 
 # So basically, if your dataset has 3 classes and you're trying to classify between pictures of 1) dogs 2) cats and 3) humans,
 # say you name your dataset folder 'data_directory'. Then inside 'data_directory' will be 'train' and 'test'. Further, Inside 'train' will be 
-# 3 folders - 'dogs', 'cats', 'humans'. All training images for dogs will be inside this 'dogs'. Similarly, within 'val' as well there will be the same
+# 3 folders - 'dogs', 'cats', 'humans'. All training images for dogs will be inside this 'dogs'. Similarly, within 'valid' as well there will be the same
 # 3 folders. 
 
 ## So, the structure looks like this : 
@@ -103,11 +103,11 @@ data_transforms = {
 
 data_dir = DATA_DIR
 dsets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x])
-         for x in ['train', 'val']}
+         for x in ['train', 'valid']}
 dset_loaders = {x: torch.utils.data.DataLoader(dsets[x], batch_size=BATCH_SIZE,
                                                shuffle=True, num_workers=25)
-                for x in ['train', 'val']}
-dset_sizes = {x: len(dsets[x]) for x in ['train', 'val']}
+                for x in ['train', 'valid']}
+dset_sizes = {x: len(dsets[x]) for x in ['train', 'valid']}
 dset_classes = dsets['train'].classes
 
 
@@ -145,14 +145,14 @@ def train_model(model, criterion, optimizer, lr_scheduler, num_epochs=100):
         print('-' * 10)
 
         # Each epoch has a training and validation phase
-        for phase in ['train', 'val']:
+        for phase in ['train', 'valid']:
             if phase == 'train':
                 mode='train'
                 optimizer = lr_scheduler(optimizer, epoch)
                 model.train()  # Set model to training mode
             else:
                 model.eval()
-                mode='val'
+                mode='valid'
 
             running_loss = 0.0
             running_corrects = 0
@@ -209,7 +209,7 @@ def train_model(model, criterion, optimizer, lr_scheduler, num_epochs=100):
 
 
             # deep copy the model
-            if phase == 'val':
+            if phase == 'valid':
                 if USE_TENSORBOARD:
                     foo.add_scalar_value('epoch_loss',epoch_loss,step=epoch)
                     foo.add_scalar_value('epoch_acc',epoch_acc,step=epoch)

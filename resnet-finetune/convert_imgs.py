@@ -1,32 +1,57 @@
 import os
-import shutil
 import cv2
+import re
 
-# Paths to original dataset
-ORIG_DATASET = "images"  # Change to actual path
-NEW_DATASET = "dataset"
+# Paths
+YOLO_IMAGES_PATH = "images"  # Folder containing YOLO dataset images
+YOLO_LABELS_PATH = "images"  # YOLO dataset labels are inside 'images/{split}/labels'
+EYE_IMGS_PATH = "eye_imgs"  # Folder with healthy/sick classification
+NEW_DATASET_PATH = "dataset"
 
-# Class mapping
+# Class mapping (Eye comes before Fish)
 CLASS_NAMES = ["Eye", "Fish"]
 EYE_CLASS_INDEX = CLASS_NAMES.index("Eye")
 
-for split in ["train", "valid"]:
-    os.makedirs(os.path.join(NEW_DATASET, split), exist_ok=True)
+# Healthy and sick folder mapping
+CATEGORY_MAP = {
+    "EyeHealthy": "healthy",
+    "EyeIssue": "sick"
+}
 
+def get_base_name(yolo_filename):
+    """Extracts the base name from a YOLO filename to match 'eye_imgs' format."""
+    match = re.match(r"(ZHAW[-_]Biocam_\d+_\d+)_jpg\.rf\..+\.jpg", yolo_filename)
+    if match:
+        return match.group(1).replace("-", " ") + ".jpg"  # Convert dashes to spaces
+    return None
+
+def get_category(yolo_filename):
+    """Determines if an image is 'healthy' or 'sick' based on 'eye_imgs' filenames."""
+    base_name = get_base_name(yolo_filename)
+    if base_name:
+        for category, label in CATEGORY_MAP.items():
+            if os.path.exists(os.path.join(EYE_IMGS_PATH, category, base_name)):
+                return label
+    return None  # Ignore images not found in 'eye_imgs'
 
 def process_split(split):
-    """ Process train or valid split to extract only 'Eye' label images. """
-    labels_path = os.path.join(ORIG_DATASET, split, "labels")
-    images_path = os.path.join(ORIG_DATASET, split, "images")
-    new_images_path = os.path.join(NEW_DATASET, split)
+    """Processes train or valid split, extracting only 'Eye' and classifying."""
+    images_path = os.path.join(YOLO_IMAGES_PATH, split, "images")
+    labels_path = os.path.join(YOLO_IMAGES_PATH, split, "labels")
 
-    for label_file in os.listdir(labels_path):
-        label_path = os.path.join(labels_path, label_file)
-        image_file = label_file.replace(".txt", ".jpg")  # Adjust if using PNG
-        image_path = os.path.join(images_path, image_file)
-
-        if not os.path.exists(image_path):
+    for image_file in os.listdir(images_path):
+        if not image_file.lower().endswith(('.jpg', '.png')):
             continue
+
+        category = get_category(image_file)
+        if category is None:
+            continue  # Skip images not in 'eye_imgs'
+
+        label_file = image_file.replace(".jpg", ".txt").replace(".png", ".txt")
+        label_path = os.path.join(labels_path, label_file)
+
+        if not os.path.exists(label_path):
+            continue  # Skip images with no label file
 
         with open(label_path, "r") as f:
             lines = f.readlines()
@@ -39,7 +64,7 @@ def process_split(split):
                 eye_boxes.append([float(x) for x in parts[1:]])
 
         if eye_boxes:
-            img = cv2.imread(image_path)
+            img = cv2.imread(os.path.join(images_path, image_file))
             h, w, _ = img.shape
 
             for i, (x_center, y_center, box_w, box_h) in enumerate(eye_boxes):
@@ -52,40 +77,15 @@ def process_split(split):
                 eye_crop = img[y1:y2, x1:x2]
 
                 if eye_crop.size > 0:
+                    new_folder = os.path.join(NEW_DATASET_PATH, split, category)
+                    os.makedirs(new_folder, exist_ok=True)
+
                     new_image_name = f"{os.path.splitext(image_file)[0]}_eye_{i}.jpg"
-                    new_image_path = os.path.join(new_images_path, new_image_name)
+                    new_image_path = os.path.join(new_folder, new_image_name)
                     cv2.imwrite(new_image_path, eye_crop)
-
-
-# Define new subfolders
-CATEGORIES = ["healthy", "sick"]
-
-# Set a random seed for reproducibility
-
-
-def split_images(split):
-    """Splits images into 'healthy' and 'sick' folders within each split."""
-    split_path = os.path.join(NEW_DATASET, split)
-    images = [f for f in os.listdir(split_path) if f.lower().endswith(('.jpg', '.png'))]
-
-    # Split into two equal parts
-    mid_point = len(images) // 2
-    healthy_images, sick_images = images[:mid_point], images[mid_point:]
-
-    # Create subfolders
-    for category in CATEGORIES:
-        os.makedirs(os.path.join(split_path, category), exist_ok=True)
-
-    # Move images
-    for image in healthy_images:
-        shutil.move(os.path.join(split_path, image), os.path.join(split_path, "healthy", image))
-
-    for image in sick_images:
-        shutil.move(os.path.join(split_path, image), os.path.join(split_path, "sick", image))
-
 
 # Process train and valid splits
 for split in ["train", "valid"]:
     process_split(split)
 
-print("Dataset with only 'Eye' images has been created successfully.")
+print("Dataset has been categorized into 'healthy' and 'sick' with only 'Eye' images.")
