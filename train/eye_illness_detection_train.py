@@ -20,7 +20,7 @@ CONFIG_PATH      : str = f"./data/detection/{CONFIG_NAME}"
 MODEL_NAME       : str = "yolov8n.pt"
 MODEL_PATH       : str = f"./model/detection/{MODEL_NAME}"
 SAVE_PATH        : str = "./trained_model/detection"
-TUNED_MODEL_NAME : str = f"{MODEL_NAME}_trained.pt"
+TUNED_MODEL_NAME : str = f"{MODEL_NAME[:-3]}_trained.pt"
 
 # Load (or download) the pre-trained model
 model : YOLO = YOLO(MODEL_PATH)
