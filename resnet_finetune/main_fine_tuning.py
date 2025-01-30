@@ -1,7 +1,7 @@
 # Section 1 - First, let's import everything we will be needing.
 
 from __future__ import print_function, division
-from fine_tuning_config_file import *
+from .fine_tuning_config_file import *
 import torch
 import torch.nn as nn
 import torch.optim as optim
