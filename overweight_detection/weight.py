@@ -6,13 +6,12 @@ import time
 import numpy as np
 import easyocr 
 from ultralytics import YOLO
-import shutil
 
 _DEVICE = 'cuda'
 _YOLO_MODEL_PATH = "model/classification/finetuned_numeros.pt"
 
 
-def read_weight(image_path : str) -> float:
+def read_weight(image_path : str, image_save_path : str) -> float:
 
     image = cv2.imread(image_path)
     image_name = image_path.split('/')
@@ -26,11 +25,15 @@ def read_weight(image_path : str) -> float:
 
 
 
-    if os.path.exists("runs/weight/detect/predict"):  # Check if directory exists
-        shutil.rmtree("runs/weight/detect/predict")  # Delete it
+    if os.path.exists(image_save_path):  # Check if directory exists
+        os.remove(image_save_path)  # Delete it
+    
+
+    file_dir = "".join(image_save_path.split('/')[:-1])
+
 
     # Extract the fish eye and the fish
-    number_detector(source = image_path, conf = 0.4, save = True, save_txt = True, project = "runs/weight/detect", name = "predict")
+    number_detector(source = image_path, conf = 0.4, save = True, save_txt = True, project = file_dir)
 
     label_path = "runs/weight/detect/predict/labels/" + image_name.replace(".png",".txt").replace(".jpg",".txt")
     datos = ""
