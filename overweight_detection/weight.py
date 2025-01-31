@@ -13,7 +13,7 @@ _DEVICE = 'cuda'
 _YOLO_MODEL_PATH = "model/classification/finetuned_numeros.pt"
 
 
-def read_weight(image_path : str):
+def read_weight(image_path : str) ->  float:
 
     image = cv2.imread(image_path)
     image_name = image_path.split('/')
@@ -84,8 +84,8 @@ def read_weight(image_path : str):
     print("Detected2: " + "".join(results2))
 
     # usar los dos resultados para sacar uno favorito
-    res1 = int(results)
-    res2 = int(results2)
+    res1 = int(results)/10
+    res2 = int(results2)/10
 
     if(np.abs(800 - res1) < np.abs(800 - res2)):
         return res1
