@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.core.files.storage import default_storage
-from main.test import analyze_image
+from django.conf import settings
+from django.templatetags.static import static
+
+from main import main
+
+import os
 
 
 def analyze_image(request):
@@ -12,18 +17,25 @@ def analyze_image(request):
 
         if image:
             path = default_storage.save(f"uploads/{image.name}", image)
-            result = analyze_image(path, weight, eyes, shap)
+            bb_path = "./static/results/yolo.jpg"
+            shap_path = "./static/results/shap.jpg"
+            numbers_path = "./static/results/"
+            result = main(path, bb_path, shap_path, numbers_path, eyes, weight, shap)
 
-            weight = result.get("weight", None)
-            eyes = result.get("eyes", None)
-            shap_path = result.get("shap", None)
-            bb_path = result.get("bb_path", None)
+            weight = result.get("weight_classification", None)
+            eyes = result.get("eye_classification", None)
+            number_image = "/results/predict/" + image.name
+
+            default_storage.delete(f"uploads/{image.name}")
+
+            print(number_image)
 
             return render(request, "analysis/results.html", {
                 "weight": weight,
                 "eyes": eyes,
                 "shap_path": shap_path,
-                "bb_path": bb_path
+                "bb_path": bb_path,
+                "number_image": number_image
             })
 
     return render(request, "analysis/index.html")
