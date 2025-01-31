@@ -25,6 +25,7 @@ _DEVICE : str = "cuda" if torch.cuda.is_available() else "cpu"
 def main(img_path : str, 
          yolo_saving_path : str,
          shap_saving_path : str, 
+         yolo_weight_saving_path : str,
          detect_eye_disease : bool, 
          detect_overweight : bool, 
          explain_model : bool) -> dict[int, bool]:
@@ -99,7 +100,21 @@ def main(img_path : str,
             explain(model=eye_disease_classifier, not_transformed_image=eye_img, saving_path=shap_saving_path)
 
     if(detect_overweight):
-        pass
+        # Start by getting the weight of the fish
+        fish_weight : float = read_weight(img_path, yolo_weight_saving_path)
+
+        # Now, classify it as underweight, normal or overweight
+        fish_img : Image = fish_and_eye_images[FISH]
+
+        WIDTH_IMG : int
+        width_box : int
+
+        WIDTH_IMG, _ = img.size  
+        width_box, _ = fish_img.size
+
+        weight_classification : int = under_over_weight(width_box, WIDTH_IMG, fish_weight)
+
+        results_dict["weight_classification"] = weight_classification
 
     return results_dict
 
@@ -110,8 +125,10 @@ if __name__=="__main__":
     # SICK
     sick = "/home/seby/Dev/BeHappyFish_Challenge/data/detection/train/images/ZHAW-Biocam_00_20240325112303_jpg.rf.080d49caafe219c2875bd902b803d27d.jpg"
 
-    main(sick, "./results/yolo.png",
-         "",
+    main(sick, 
+         "./results/yolo.png",
+         "./results/shap.png",
+         "./results/weight.png",
          True,
          False,
          True)
