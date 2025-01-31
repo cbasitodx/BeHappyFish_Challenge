@@ -26,7 +26,9 @@ def read_weight(image_path : str, image_save_path : str) -> float:
     file_dir = "/".join(image_save_path.split('/')[:-1])
 
     if os.path.exists(file_dir + "/predict"):  # Check if directory exists
-        shutil.rmtree(file_dir + "/predict")  # Delete it
+        shutil.rmtree(file_dir + "/predict")  # Delete it qa
+
+        
     
 
     
