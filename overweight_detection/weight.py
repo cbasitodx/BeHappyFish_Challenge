@@ -80,8 +80,8 @@ def read_weight(image_path : str, image_save_path : str) -> float:
     results2 : str = "".join(reader.readtext(number_box, detail=0, allowlist="0123456789"))
 
     # usar los dos resultados para sacar uno favorito
-    res1 = int(results)/100
-    res2 = int(results2)/100
+    res1 = 0 if results == "" else int(results)/100
+    res2 = 0 if results2 == "" else int(results2)/100
 
     if(np.abs(1000 - res1) < np.abs(1000 - res2)):
         return res1

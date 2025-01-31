@@ -94,6 +94,7 @@ def main(img_path : str,
 
         # Obtain the results
         healthy_eye : bool = True if torch.argmax(eye_disease_classifier(eye_img_tensor)) == HEALTHY else False
+        print(eye_disease_classifier(eye_img_tensor))
 
         results_dict["eye_classification"] = healthy_eye
 
@@ -125,9 +126,9 @@ if __name__=="__main__":
     healthy = "/home/seby/Dev/BeHappyFish_Challenge/data/detection/train/images/ZHAW-Biocam_00_20240325093908_jpg.rf.290618dfca86b3aa7ba4d333ff49c4c0.jpg"
     
     # SICK
-    sick = "/home/seby/Dev/BeHappyFish_Challenge/data/detection/train/images/ZHAW-Biocam_00_20240325112303_jpg.rf.080d49caafe219c2875bd902b803d27d.jpg"
+    sick = "/home/seby/Dev/BeHappyFish_Challenge/data/detection/train/images/ZHAW-Biocam_00_20240325112402_jpg.rf.4c5c31cfa194825beab8d76aae65bd81.jpg"
 
-    x = main(sick, 
+    x = main(healthy, 
          "./results/yolo.png",
          "./results/shap.png",
          "./results/",
