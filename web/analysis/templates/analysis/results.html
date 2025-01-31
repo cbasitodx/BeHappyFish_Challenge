@@ -27,9 +27,9 @@
 					{% endif %}
 				</div>
 				{% endif %} {% if eyes is not None %}
-				<div class="alert {% if eyes %}alert-danger{% else %}alert-success{% endif %} text-center">
+				<div class="alert {% if not eyes %}alert-danger{% else %}alert-success{% endif %} text-center">
 					<strong>Eye Health:</strong>
-					{% if eyes %} The fish has an eye disease. {% else %} The fish's eyes appear healthy. {% endif %}
+					{% if not eyes %} The fish has an eye disease. {% else %} The fish's eyes appear healthy. {% endif %}
 				</div>
 				{% endif %} {% if bb_path %}
 				<div class="text-center">
