@@ -28,7 +28,7 @@ def read_weight(image_path : str, image_save_path : str) -> float:
         os.remove(image_save_path)  # Delete it
     
 
-    file_dir = "".join(image_save_path.split('/')[:-1])
+    file_dir = "/".join(image_save_path.split('/')[:-1])
 
 
     # Extract the fish eye and the fish
