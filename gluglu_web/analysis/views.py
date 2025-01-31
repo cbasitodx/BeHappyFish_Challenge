@@ -1,7 +1,6 @@
-import os
 from django.shortcuts import render
 from django.core.files.storage import default_storage
-from ...main.main import analizar_imagen
+from main.test import analyze_image
 
 
 def analyze_image(request):
@@ -13,7 +12,7 @@ def analyze_image(request):
 
         if image:
             path = default_storage.save(f"uploads/{image.name}", image)
-            result = analizar_imagen(path, weight, eyes, shap)  # Call your function
+            result = analyze_image(path, weight, eyes, shap)
 
             weight = result.get("weight", None)
             eyes = result.get("eyes", None)
