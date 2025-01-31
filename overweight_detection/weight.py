@@ -73,9 +73,6 @@ def read_weight(image_path : str) -> float:
 
     results : str = "".join(reader.readtext(img, detail=0, allowlist="0123456789"))
     results2 : str = "".join(reader.readtext(number_box, detail=0, allowlist="0123456789"))
-    print(results)
-    print("Detected Digits:", "".join(results))
-    print("Detected2: " + "".join(results2))
 
     # usar los dos resultados para sacar uno favorito
     res1 = int(results)/100
