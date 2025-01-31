@@ -4,7 +4,6 @@ import cv2
 import os
 import time
 import numpy as np
-import pytesseract
 import easyocr 
 from ultralytics import YOLO
 import shutil
@@ -13,7 +12,7 @@ _DEVICE = 'cuda'
 _YOLO_MODEL_PATH = "model/classification/finetuned_numeros.pt"
 
 
-def read_weight(image_path : str) ->  float:
+def read_weight(image_path : str) -> float:
 
     image = cv2.imread(image_path)
     image_name = image_path.split('/')

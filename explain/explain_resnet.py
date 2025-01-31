@@ -31,19 +31,3 @@ def explain(model : models.RegNet, not_transformed_image : Image, saving_path : 
     # Generate the visualization of the explanation
     shap.image_plot(shap_values.squeeze(0), img_tensor.squeeze(0).cpu().numpy(), show=False)
     plt.savefig(saving_path)
-
-if __name__=="__main__":
-    img = Image.open("/home/seby/Dev/BeHappyFish_Challenge/data/classification/train/healthy/ZHAW-Biocam_00_20240325093908_jpg.rf.290618dfca86b3aa7ba4d333ff49c4c0_eye_0.jpg")
-    
-    # Load the finetuned model
-    device : str = "cuda" if torch.cuda.is_available() else "cpu"
-    model        = models.resnet18(pretrained=True)
-
-    # Change the final layer (fc) according to the number of classes in the fish eye illness dataset
-    num_classes = 2  # Ajusta a tu número de clases
-    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
-
-    model.load_state_dict(torch.load("./trained_model/classification/fine_tuned_best_model.pt", map_location=device))
-    model.eval().to(device)
-
-    explain(model, img, "./results/xxxx.png")
