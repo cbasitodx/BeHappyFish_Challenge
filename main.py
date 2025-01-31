@@ -17,7 +17,7 @@ EYE                : int = 0
 FISH               : int = 1
 
 HEALTHY            : int = 0
-SICK               : int = 0
+SICK               : int = 1
 
 _YOLO_MODEL_PATH   : str = "./trained_model/detection/yolov8n.pt_trained.pt/weights/best.pt"
 _RESNET_MODEL_PATH : str = "./trained_model/classification/fine_tuned_best_model.pt" 
@@ -130,7 +130,7 @@ if __name__=="__main__":
     x = main(sick, 
          "./results/yolo.png",
          "./results/shap.png",
-         "./results/weight.png",
+         "./results/",
          True,
          True,
          True)
