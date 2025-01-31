@@ -6,6 +6,8 @@ from PIL import Image
 from ultralytics import YOLO
 
 from explain.explain_resnet import explain
+from overweight_detection.weight import read_weight
+from overweight_detection.under_over_weight import under_over_weight
 
 UNDERWEIGHT        : int = 0
 NORMAL             : int = 1
@@ -125,10 +127,12 @@ if __name__=="__main__":
     # SICK
     sick = "/home/seby/Dev/BeHappyFish_Challenge/data/detection/train/images/ZHAW-Biocam_00_20240325112303_jpg.rf.080d49caafe219c2875bd902b803d27d.jpg"
 
-    main(sick, 
+    x = main(sick, 
          "./results/yolo.png",
          "./results/shap.png",
          "./results/weight.png",
          True,
-         False,
+         True,
          True)
+    
+    print(x)
