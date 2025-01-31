@@ -14,8 +14,7 @@ _YOLO_MODEL_PATH = "model/classification/finetuned_numeros.pt"
 def read_weight(image_path : str, image_save_path : str) -> float:
 
     image = cv2.imread(image_path)
-    image_name = image_path.split('/')
-    image_name = image_name[image_name.__len__()-1]
+    image_name = image_path.split('/')[-1]
 
 
 
@@ -35,7 +34,7 @@ def read_weight(image_path : str, image_save_path : str) -> float:
     # Extract the fish eye and the fish
     number_detector(source = image_path, conf = 0.4, save = True, save_txt = True, project = file_dir)
 
-    label_path = "runs/weight/detect/predict/labels/" + image_name.replace(".png",".txt").replace(".jpg",".txt")
+    label_path = file_dir + "/labels/" + image_name.replace(".png",".txt").replace(".jpg",".txt")
     datos = ""
     with open(label_path, 'r') as file:
         lineas = file.readlines()
