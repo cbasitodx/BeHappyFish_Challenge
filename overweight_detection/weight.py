@@ -18,7 +18,6 @@ def read_weight(image_path : str) ->  float:
     image = cv2.imread(image_path)
     image_name = image_path.split('/')
     image_name = image_name[image_name.__len__()-1]
-    image_old = image
 
 
 
@@ -33,7 +32,6 @@ def read_weight(image_path : str) ->  float:
 
     # Extract the fish eye and the fish
     number_detector(source = image_path, conf = 0.4, save = True, save_txt = True, project = "runs/weight/detect", name = "predict")
-    bounding_box_img = cv2.imread("runs/weight/detect/predict/" + image_name)
 
     label_path = "runs/weight/detect/predict/labels/" + image_name.replace(".png",".txt").replace(".jpg",".txt")
     datos = ""
@@ -70,28 +68,24 @@ def read_weight(image_path : str) ->  float:
 
     img[white] = 255
 
-    cv2.imshow('bbox',img)
-    cv2.imshow('old',number_box)
-
 
     # Initialize EasyOCR reader (English digits)
     reader = easyocr.Reader(['en'], gpu=True)
 
-    results : str = reader.readtext(img, detail=0, allowlist="0123456789")
-    results2 : str = reader.readtext(number_box, detail=0, allowlist="0123456789")
+    results : str = "".join(reader.readtext(img, detail=0, allowlist="0123456789"))
+    results2 : str = "".join(reader.readtext(number_box, detail=0, allowlist="0123456789"))
     print(results)
     print("Detected Digits:", "".join(results))
     print("Detected2: " + "".join(results2))
 
     # usar los dos resultados para sacar uno favorito
-    res1 = int(results)/10
-    res2 = int(results2)/10
+    res1 = int(results)/100
+    res2 = int(results2)/100
 
-    if(np.abs(800 - res1) < np.abs(800 - res2)):
+    if(np.abs(1000 - res1) < np.abs(1000 - res2)):
         return res1
     else:
         return res2
-
 
 
     
