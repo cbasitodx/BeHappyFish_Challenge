@@ -93,7 +93,7 @@ def main(img_path : str,
         eye_img_tensor : torch.Tensor = transform(eye_img).to(_DEVICE)
 
         # Obtain the results
-        healthy_eye : bool = True if torch.argmax(eye_img_tensor) == HEALTHY else False
+        healthy_eye : bool = True if torch.argmax(eye_disease_classifier(eye_img_tensor)) == HEALTHY else False
 
         results_dict["eye_classification"] = healthy_eye
 
