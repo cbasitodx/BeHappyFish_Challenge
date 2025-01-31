@@ -5,7 +5,6 @@ import os
 import time
 import numpy as np
 import pytesseract
-import subprocess
 import easyocr 
 from ultralytics import YOLO
 import shutil
@@ -14,14 +13,11 @@ _DEVICE = 'cuda'
 _YOLO_MODEL_PATH = "model/classification/finetuned_numeros.pt"
 
 
+def read_weight(image_path : str):
 
-image = cv2.imread("Dataset/LINDA/EelisaHackathonDatasetsLinda/FishDiseaseZHAW/OverUnderWeight/ZHAW Biocam_00_20240325094126.jpg")
-
-images = [f for f in os.listdir("Dataset/LINDA/EelisaHackathonDatasetsLinda/FishDiseaseZHAW/OverUnderWeight")]
-
-for image_name in images:
-    image_path = "Dataset/LINDA/EelisaHackathonDatasetsLinda/FishDiseaseZHAW/OverUnderWeight/" + image_name
     image = cv2.imread(image_path)
+    image_name = image_path.split('/')
+    image_name = image_name[image_name.__len__()-1]
     image_old = image
 
 
@@ -32,14 +28,14 @@ for image_name in images:
 
 
 
-    if os.path.exists("runs/detect/predict"):  # Check if directory exists
-        shutil.rmtree("runs/detect/predict")  # Delete it
+    if os.path.exists("runs/weight/detect/predict"):  # Check if directory exists
+        shutil.rmtree("runs/weight/detect/predict")  # Delete it
 
     # Extract the fish eye and the fish
-    number_detector(source = image_path, conf = 0.4, save = True, save_txt = True, project = "runs/detect", name = "predict")
-    bounding_box_img = cv2.imread("runs/detect/predict/" + image_name)
+    number_detector(source = image_path, conf = 0.4, save = True, save_txt = True, project = "runs/weight/detect", name = "predict")
+    bounding_box_img = cv2.imread("runs/weight/detect/predict/" + image_name)
 
-    label_path = "runs/detect/predict/labels/" + image_name.replace(".png",".txt").replace(".jpg",".txt")
+    label_path = "runs/weight/detect/predict/labels/" + image_name.replace(".png",".txt").replace(".jpg",".txt")
     datos = ""
     with open(label_path, 'r') as file:
         lineas = file.readlines()
@@ -88,19 +84,15 @@ for image_name in images:
     print("Detected2: " + "".join(results2))
 
     # usar los dos resultados para sacar uno favorito
-    if(results.__len__() != results2.__len__()):
-        print("hola")
+    res1 = int(results)
+    res2 = int(results2)
+
+    if(np.abs(800 - res1) < np.abs(800 - res2)):
+        return res1
+    else:
+        return res2
 
 
-
-
-    #cv2.imshow('Cropped Yellow Rectangle', image)
-    cv2.namedWindow('bounding box', cv2.WINDOW_NORMAL)
-    cv2.imshow('bounding box', bounding_box_img)
-    cv2.resizeWindow('bounding box', 500, 500)
-    cv2.moveWindow('bounding box', 500, 500)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
 
     
             
