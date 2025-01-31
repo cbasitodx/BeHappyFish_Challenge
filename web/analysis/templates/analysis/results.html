@@ -41,13 +41,12 @@
 					<h5>SHAP Analysis</h5>
 					<img src="{% static 'results/shap.jpg' %}" alt="SHAP Analysis" class="img-fluid rounded shadow-sm" />
 				</div>
-				{% endif %}
-
+				{% endif %} {% if weight is not None %}
 				<div class="text-center mt-4">
 					<h5>Weight Reading</h5>
-					<h5>{{ number_image }}</h5>
 					<img src="/static{{ number_image }}" alt="number_image" class="img-fluid rounded shadow-sm" />
 				</div>
+				{% endif %}
 
 				<div class="text-center mt-4">
 					<a href="/" class="btn btn-secondary">Go Back</a>

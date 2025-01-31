@@ -29,6 +29,7 @@ def analyze_image(request):
             default_storage.delete(f"uploads/{image.name}")
 
             print(number_image)
+            print(weight)
 
             return render(request, "analysis/results.html", {
                 "weight": weight,
