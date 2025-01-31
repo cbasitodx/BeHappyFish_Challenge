@@ -1,7 +1,7 @@
 # ************* YOLO v8 FINETUNING MODEL FOR EYE DETECTION ************* #
 import torch
 from ultralytics import YOLO
-from IPython.display import display, Image
+from IPython.display import display
 from IPython import display
 
 # Choose the device for training the model
